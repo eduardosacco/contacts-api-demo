@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace ContactsAPI.Data
+namespace ContactsAPI.Models
 {
     public class ProfileImage
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         public Byte[] Image { get; set; }
     }

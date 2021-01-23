@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+using System.Reflection;
 using ContactsAPI.Data;
 using ContactsAPI.Services;
 using Microsoft.AspNetCore.Builder;
@@ -26,9 +29,25 @@ namespace ContactsAPI
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ContactsAPI", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo {
+                    Title = "ContactsAPI",
+                    Version = "v1",
+                    Description = "An ASP.NET Core Web API for contact records management.",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Eduardo Sacco",
+                        Email = "saccoeduardo@gmail.com",
+                        Url = new Uri("https://www.linkedin.com/in/esacco/"),
+                    }
+                });
+
+                // Enable XML comments for the Swagger JSON & UI
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
-            services.AddDbContext<DataContext>(options => options.UseInMemoryDatabase("ContactRecords"));
+
+            services.AddDbContext<ContactRecordsContext>(options => options.UseInMemoryDatabase("ContactRecords"));
             services.AddScoped<IContactRecordsService, ContactRecordsService>();
         }
 

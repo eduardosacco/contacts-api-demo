@@ -1,12 +1,10 @@
 using System;
 
-namespace ContactsAPI.Data
+namespace ContactsAPI.Models
 {
     public class ContactRecord
     {
         public long Id { get; set; }
-
-        public Guid ProfileImageId { get; set; }
 
         public string Name { get; set; }
 
@@ -21,6 +19,8 @@ namespace ContactsAPI.Data
         public string PhoneNumberPersonal { get; set; }
 
         public string PhoneNumberWork { get; set; }
+
+        public string State { get; set; }
 
         public string Address { get; set; }
     }
