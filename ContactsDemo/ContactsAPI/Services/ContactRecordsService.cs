@@ -46,7 +46,7 @@ namespace ContactsAPI.Services
                 _context.ContactRecords.Remove(contactRecord);
             }
 
-            var profileImage = await _context.ProfileImages.FirstOrDefaultAsync(x => x.Id == id);
+            var profileImage = await _context.ProfileImages.FirstOrDefaultAsync(x => x.ContactRecordId == id);
             if (profileImage != null)
             {
                 _context.ProfileImages.Remove(profileImage);
@@ -61,8 +61,16 @@ namespace ContactsAPI.Services
 
         public async Task AddUpdateContactRecordProfileImage(ProfileImage profileImage)
         {
-            _context.Entry(profileImage).State = profileImage.Id == 0 ?
-                EntityState.Added : EntityState.Modified;
+            var existingProfileImage = await _context.ProfileImages.FirstOrDefaultAsync(x => x.ContactRecordId == profileImage.ContactRecordId);
+
+            if (existingProfileImage != null)
+            {
+                existingProfileImage.Image = profileImage.Image;
+            }
+            else
+            {
+                _context.Entry(profileImage).State = EntityState.Added;
+            }
 
             if (_context.ChangeTracker.HasChanges())
             {
@@ -70,9 +78,9 @@ namespace ContactsAPI.Services
             }
         }
 
-        public async Task<ProfileImage> GetContactRecordProfileImage(long id)
+        public async Task<ProfileImage> GetContactRecordProfileImage(long contactRecordId)
         {
-            return await _context.ProfileImages.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.ProfileImages.FirstOrDefaultAsync(x => x.ContactRecordId == contactRecordId);
         }
 
         public async Task DeleteContactRecordProfileImage(long id)

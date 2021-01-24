@@ -50,6 +50,7 @@ namespace ContactsAPI.Controllers
         }
 
         /// <summary>Deletes contact with specified Id</summary>
+        /// <param name="id" example="2">Id</param>
         [HttpDelete]
         [Route("record")]
         public async Task<IActionResult> DeleteContactRecordById([Required] long id)
@@ -60,6 +61,7 @@ namespace ContactsAPI.Controllers
         }
 
         /// <summary>Get contact with specified Id</summary>
+        /// <param name="id" example="2">Id</param>
         [HttpGet]
         [Route("record/id")]
         public async Task<ActionResult<ContactRecord>> GetContactRecordById([Required] long id)
@@ -77,6 +79,7 @@ namespace ContactsAPI.Controllers
         }
 
         /// <summary>Get contact with specified phone number</summary>
+        /// <param name="phoneNumber" example="12345678">Phone number</param>
         [HttpGet]
         [Route("record/phoneNumber")]
         public async Task<ActionResult<ContactRecord>> GetContactRecordByPhonenumber([Required] string phoneNumber)
@@ -94,6 +97,7 @@ namespace ContactsAPI.Controllers
         }
 
         /// <summary>Get contact with specified email address</summary>
+        /// /// <param name="emailAddress" example="john.doe@contoso.com">Email address</param>
         [HttpGet]
         [Route("record/emailAddress")]
         public async Task<ActionResult<ContactRecord>> GetContactRecordByEmailAddress([Required] string emailAddress)
@@ -136,11 +140,11 @@ namespace ContactsAPI.Controllers
         }
 
         /// <summary>Set contact record profile image for specified id</summary>
-        /// <param name="id" example="1">Id of the contact recort to add the image to</param>
+        /// <param name="contactRecordId" example="1">Id of the contact record to add the image to</param>
         /// <param name="file">Image file (.jpeg .png supported)</param>
         [HttpPost]
         [Route("profileImage")]
-        public async Task<ActionResult> AddUpdateContactRecordProfileImageById([Required] long id, [Required] IFormFile file)
+        public async Task<ActionResult> AddUpdateContactRecordProfileImageById([Required] long contactRecordId, [Required] IFormFile file)
         {
             using (var memoryStream = new MemoryStream())
             {
@@ -160,7 +164,8 @@ namespace ContactsAPI.Controllers
                     {
                         var profileImage = new ProfileImage
                         {
-                            Id = id,
+                            Id = 0,
+                            ContactRecordId = contactRecordId,
                             Image = bytes
                         };
 
@@ -184,9 +189,9 @@ namespace ContactsAPI.Controllers
         /// <summary>Get contact record profile image for specified id</summary>
         [HttpGet]
         [Route("profileImage")]
-        public async Task<FileContentResult> GetContactRecordProfileImageById([Required] long id)
+        public async Task<FileContentResult> GetContactRecordProfileImageById([Required] long contactRecordId)
         {
-            var profileImage = await _contactRecordsService.GetContactRecordProfileImage(id);
+            var profileImage = await _contactRecordsService.GetContactRecordProfileImage(contactRecordId);
 
             return File(profileImage.Image, "image/png");
         }

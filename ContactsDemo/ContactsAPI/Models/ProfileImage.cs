@@ -6,6 +6,8 @@ namespace ContactsAPI.Models
     {
         public long Id { get; set; }
 
+        public long ContactRecordId { get; set; }
+
         public Byte[] Image { get; set; }
     }
 }

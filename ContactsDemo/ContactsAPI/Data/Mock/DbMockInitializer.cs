@@ -86,9 +86,11 @@ namespace ContactsAPI.Data
                         stringId = match.Groups[1].Value;
                     }
 
+                    var id = Int64.Parse(stringId);
                     context.ProfileImages.Add(new ProfileImage
                     {
-                        Id = Int64.Parse(stringId),
+                        Id = id,
+                        ContactRecordId = id,
                         Image = imageBytes
                     });
                 }
