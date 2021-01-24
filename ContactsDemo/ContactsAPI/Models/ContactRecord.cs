@@ -20,7 +20,7 @@ namespace ContactsAPI.Models
         public string Company { get; set; }
 
         /// <example>john.doe@contoso.com</example>
-        [Required(ErrorMessage = "The email address is required")]
+        [Required]
         [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string EmailAddress { get; set; }
 
@@ -37,6 +37,7 @@ namespace ContactsAPI.Models
         public string PhoneNumberWork { get; set; }
 
         /// <example>USA</example>
+        [Required]
         public string Country { get; set; }
 
         /// <example>Massachussetts</example>
