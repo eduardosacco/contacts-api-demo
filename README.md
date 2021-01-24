@@ -17,7 +17,7 @@ To run the contacts API demo you need to:
 1. Open the **ContactsDemo** solution in contacts-api-demo\ContactsDemo folder.
 2. Make sure that the **ContactsAPI** project and is selected and run on IIS, or press F5.
 ![Swagger UI](./InstructionFiles/demo-run.png)
-3. If prompte choose to trust the ISS Express generated self signed SSL certificate to avoid SSL warnings in the browser.
+3. If prompted choose to trust the ISS Express generated self signed SSL certificate to avoid SSL warnings in the browser.
 4. A browser window showing the Swagger UI will be opened.
 5. Choose endpoint you want to test. Descriptions and sample data are provided in the Swagger UI for all endpoints.
 

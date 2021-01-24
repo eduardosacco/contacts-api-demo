@@ -17,6 +17,7 @@ namespace ContactsAPI.Controllers
     [Route("api/[controller]")]
     public class ContactRecordsController : ControllerBase
     {
+        private const int _maxProfileImageSizeKB = 262144;
         private readonly ILogger<ContactRecordsController> _logger;
         private readonly IContactRecordsService _contactRecordsService;
 
@@ -39,7 +40,7 @@ namespace ContactsAPI.Controllers
             _logger = logger;
         }
 
-        /// <summary>Creates contact record if Id = 0, updates a contact record if Id is specified</summary>
+        /// <summary>Creates contact record if Id = 0, updates a contact record if Id is specified.</summary>
         [HttpPost]
         [Route("record")]
         public async Task<ActionResult<ContactRecord>> AddUpdateContactRecord([Required] ContactRecord contactRecord)
@@ -49,7 +50,7 @@ namespace ContactsAPI.Controllers
             return CreatedAtAction(nameof(AddUpdateContactRecord), new { id = contactRecord.Id }, contactRecord);
         }
 
-        /// <summary>Deletes contact with specified Id</summary>
+        /// <summary>Deletes contact record with specified Id, also deletes profile image if an associated image exists for the contact record id.</summary>
         /// <param name="id" example="2">Id</param>
         [HttpDelete]
         [Route("record")]
@@ -60,7 +61,7 @@ namespace ContactsAPI.Controllers
             return NoContent();
         }
 
-        /// <summary>Get contact with specified Id</summary>
+        /// <summary>Get contact with specified Id.</summary>
         /// <param name="id" example="2">Id</param>
         [HttpGet]
         [Route("record/id")]
@@ -78,8 +79,8 @@ namespace ContactsAPI.Controllers
             return contactRecord;
         }
 
-        /// <summary>Get contact with specified phone number</summary>
-        /// <param name="phoneNumber" example="12345678">Phone number</param>
+        /// <summary>Get contact with specified phone number.</summary>
+        /// <param name="phoneNumber" example="4689723">Phone number</param>
         [HttpGet]
         [Route("record/phoneNumber")]
         public async Task<ActionResult<ContactRecord>> GetContactRecordByPhonenumber([Required] string phoneNumber)
@@ -97,7 +98,7 @@ namespace ContactsAPI.Controllers
         }
 
         /// <summary>Get contact with specified email address</summary>
-        /// /// <param name="emailAddress" example="john.doe@contoso.com">Email address</param>
+        /// /// <param name="emailAddress" example="norma@rrdiner.com">Email address</param>
         [HttpGet]
         [Route("record/emailAddress")]
         public async Task<ActionResult<ContactRecord>> GetContactRecordByEmailAddress([Required] string emailAddress)
@@ -124,8 +125,8 @@ namespace ContactsAPI.Controllers
 
         /// <summary>Get all contact with the specified location. </summary>
         /// <param name="country" example="USA">Country</param>
-        /// <param name="state" example="Washington">Country</param>
-        /// <param name="city" example="Snoqualmie">Country</param>
+        /// <param name="state" example="Washington">State</param>
+        /// <param name="city" example="Snoqualmie">City</param>
         [HttpGet]
         [Route("records/location")]
         public async Task<ActionResult<IEnumerable<ContactRecord>>>
@@ -140,8 +141,8 @@ namespace ContactsAPI.Controllers
         }
 
         /// <summary>Set contact record profile image for specified id</summary>
-        /// <param name="contactRecordId" example="1">Id of the contact record to add the image to</param>
-        /// <param name="file">Image file (.jpeg .png supported)</param>
+        /// <param name="contactRecordId" example="1">Id of the contact record to add the image for</param>
+        /// <param name="file">Image file size < 256 KB (.jpeg .png supported)</param>
         [HttpPost]
         [Route("profileImage")]
         public async Task<ActionResult> AddUpdateContactRecordProfileImageById([Required] long contactRecordId, [Required] IFormFile file)
@@ -151,7 +152,7 @@ namespace ContactsAPI.Controllers
                 await file.CopyToAsync(memoryStream);
 
                 // Upload the file if less than 256 KB
-                if (memoryStream.Length < 262144)
+                if (memoryStream.Length < _maxProfileImageSizeKB)
                 {
                     var bytes = memoryStream.ToArray();
 
@@ -187,6 +188,7 @@ namespace ContactsAPI.Controllers
         }
 
         /// <summary>Get contact record profile image for specified id</summary>
+        /// /// <param name="contactRecordId" example="1">Id of the contact record to get the image for</param>
         [HttpGet]
         [Route("profileImage")]
         public async Task<FileContentResult> GetContactRecordProfileImageById([Required] long contactRecordId)

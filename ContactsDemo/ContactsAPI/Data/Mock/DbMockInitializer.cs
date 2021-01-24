@@ -17,7 +17,7 @@ namespace ContactsAPI.Data
                 return;
             }
 
-            //Add mock contact records to context
+            // Add mock contact records to context.
             context.ContactRecords.AddRange(
                 new ContactRecord
                 {
@@ -38,7 +38,7 @@ namespace ContactsAPI.Data
                 {
                     Id = 2,
                     Name = "Norma",
-                    LastName = "jennings",
+                    LastName = "Jennings",
                     Company = "R.R. Dinner",
                     EmailAddress = "norma@rrdiner.com",
                     BirthDate = DateTime.Parse("1980-12-4"),
