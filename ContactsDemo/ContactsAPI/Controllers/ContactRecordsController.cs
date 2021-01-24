@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ContactsAPI.Models;
 using ContactsAPI.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -17,6 +19,17 @@ namespace ContactsAPI.Controllers
     {
         private readonly ILogger<ContactRecordsController> _logger;
         private readonly IContactRecordsService _contactRecordsService;
+
+        private static readonly List<byte[]> _supportedFileSignatures =
+        new List<byte[]>
+        {
+            // .jpeg
+            new byte[] { 0xFF, 0xD8, 0xFF, 0xE0 }, 
+            new byte[] { 0xFF, 0xD8, 0xFF, 0xE2 },
+            new byte[] { 0xFF, 0xD8, 0xFF, 0xE3 },
+            // .png
+            new byte[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A }
+        };
 
         public ContactRecordsController(
             IContactRecordsService contactRecordsService,
@@ -124,21 +137,48 @@ namespace ContactsAPI.Controllers
 
         /// <summary>Set contact record profile image for specified id</summary>
         /// <param name="id" example="1">Id of the contact recort to add the image to</param>
-        /// <param name="image">Image byte array</param>
+        /// <param name="file">Image file (.jpeg .png supported)</param>
         [HttpPost]
         [Route("profileImage")]
-        public async Task<FileContentResult> AddUpdateContactRecordProfileImageById([Required] long id, [Required] byte[] image)
+        public async Task<ActionResult> AddUpdateContactRecordProfileImageById([Required] long id, [Required] IFormFile file)
         {
-            var profileImage = new ProfileImage
+            using (var memoryStream = new MemoryStream())
             {
-                Id = id,
-                Image = image
-            };
-            
-            await _contactRecordsService.
-                AddUpdateContactRecordProfileImage(profileImage);
+                await file.CopyToAsync(memoryStream);
 
-            return File(profileImage.Image, "image/png");
+                // Upload the file if less than 256 KB
+                if (memoryStream.Length < 262144)
+                {
+                    var bytes = memoryStream.ToArray();
+
+                    // Validate file signature
+                    var headerLength = _supportedFileSignatures.Max(m => m.Length);
+                    var imageTypeSupported = _supportedFileSignatures.Any(signature =>
+                    bytes.Take(signature.Length).SequenceEqual(signature));
+
+                    if (imageTypeSupported)
+                    {
+                        var profileImage = new ProfileImage
+                        {
+                            Id = id,
+                            Image = bytes
+                        };
+
+                        await _contactRecordsService.
+                            AddUpdateContactRecordProfileImage(profileImage);
+                    }
+                    else
+                    {
+                        return BadRequest("The file type must be .jpeg or .png.");
+                    }
+                }
+                else
+                {
+                    return BadRequest("The file must not be larger than 256 KB.");
+                }
+            }
+
+            return Ok("File uploaded successfully.");
         }
 
         /// <summary>Get contact record profile image for specified id</summary>
