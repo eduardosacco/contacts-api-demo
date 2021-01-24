@@ -28,17 +28,17 @@ As an example, the **/record** endpoint usage will be shown.
 
 1. Select the **POST /record** endpoint method to add a new contact record.
 Note: each endpoint/method contains a helpful description.
-![Swagger UI](./InstructionFiles/record-endpoint-select.png)
+![Select record endpoint](./InstructionFiles/record-endpoint-select.png)
 
 2. Parameters and request body will be filled with example data. Press **Try it out**.
-![Swagger UI](./InstructionFiles/record-endpoint-try.png)
+![Try it out](./InstructionFiles/record-endpoint-try.png)
 
 3. Modify the parameters/body for the request. In this case we want to add a new record and we will use the example data. Press **Execute** to send the request.
 Note: for this endpoint request with ID=0 creates, if existing id is picked the record with that id will be added/updated.
-![Swagger UI](./InstructionFiles/record-endpoint-fill.png)
+![Fill record endpoint](./InstructionFiles/record-endpoint-fill.png)
 
 4. Server response http code, body and headers will be shown
-![Swagger UI](./InstructionFiles/record-endpoint-response.png)
+![Record endpoint response](./InstructionFiles/record-endpoint-response.png)
 
 ## Design notes
 ### Persistence
@@ -81,11 +81,15 @@ Validations:
 
 ### Unit test coverage
 For time constraints reasons not all endpoints and scenarios are covered.
+As example for unit test creation the **AddUpdateContactRecordProfileImageById** method was picked, which is arguably the most complex one.
+
+To run unit tests in Visual Studio go to **Tests>Run All Tests**.
+![Run Unit Tests](./InstructionFiles/unit-tests-run.png)
 
 ## Possible improvements
 If time constraints were not in place it would be cool to add:
 * Unit test coverage for all endpoints.
-* Better error handling in ContactRecords Service and Controller.
+* Better error handling and logging in ContactRecords Service and Controller.
 * Authentication to use the API.
 * Redis cache to ease DB usage.
 * Image resize/compression if user wants to upload a big image file.
