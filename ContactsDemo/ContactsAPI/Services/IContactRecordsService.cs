@@ -8,13 +8,13 @@ namespace ContactsAPI.Services
 {
     public interface IContactRecordsService
     {
-        Task InsertOrUpdateContactRecord(ContactRecord contactRecord);
+        Task AddUpdateContactRecord(ContactRecord contactRecord);
 
         IQueryable<ContactRecord> GetContactRecords(Expression<Func<ContactRecord, bool>> filter = null, bool avoidTrackingChanges = true);
 
         Task DeleteContactRecord(long id);
 
-        Task InsertOrUpdateContactRecordProfileImage(ProfileImage profileImage);
+        Task AddUpdateContactRecordProfileImage(ProfileImage profileImage);
 
         Task<ProfileImage> GetContactRecordProfileImage(long id);
 

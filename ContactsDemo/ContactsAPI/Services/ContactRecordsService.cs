@@ -20,14 +20,10 @@ namespace ContactsAPI.Services
             _context = context;
         }
 
-        public async Task InsertOrUpdateContactRecord(ContactRecord contactRecord)
+        public async Task AddUpdateContactRecord(ContactRecord contactRecord)
         {
-            var entry = _context.Entry(contactRecord);
-
-            if (entry.State == EntityState.Detached)
-            {
-                _context.ContactRecords.Add(contactRecord);
-            }
+            _context.Entry(contactRecord).State = contactRecord.Id == 0 ?
+                EntityState.Added : EntityState.Modified;
 
             if (_context.ChangeTracker.HasChanges())
             {
@@ -45,22 +41,28 @@ namespace ContactsAPI.Services
         public async Task DeleteContactRecord(long id)
         {
             var contactRecord = await _context.ContactRecords.FirstOrDefaultAsync(x => x.Id == id);
-
             if (contactRecord != null)
             {
                 _context.ContactRecords.Remove(contactRecord);
+            }
+
+            var profileImage = await _context.ProfileImages.FirstOrDefaultAsync(x => x.Id == id);
+            if (profileImage != null)
+            {
+                _context.ProfileImages.Remove(profileImage);
+            }
+
+            if (_context.ChangeTracker.HasChanges())
+            {
                 await _context.SaveChangesAsync();
             }
+
         }
 
-        public async Task InsertOrUpdateContactRecordProfileImage(ProfileImage profileImage)
+        public async Task AddUpdateContactRecordProfileImage(ProfileImage profileImage)
         {
-            var entry = _context.Entry(profileImage);
-
-            if (entry.State == EntityState.Detached)
-            {
-                _context.ProfileImages.Add(profileImage);
-            }
+            _context.Entry(profileImage).State = profileImage.Id == 0 ?
+                EntityState.Added : EntityState.Modified;
 
             if (_context.ChangeTracker.HasChanges())
             {

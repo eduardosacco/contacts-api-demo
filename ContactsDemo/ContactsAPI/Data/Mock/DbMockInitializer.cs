@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -19,8 +18,7 @@ namespace ContactsAPI.Data
             }
 
             //Add mock contact records to context
-            var mockContactRecords = new List<ContactRecord>
-            {
+            context.ContactRecords.AddRange(
                 new ContactRecord
                 {
                     Id = 1,
@@ -31,7 +29,9 @@ namespace ContactsAPI.Data
                     BirthDate = DateTime.Parse("1982-08-22"),
                     PhoneNumberPersonal = "3444555",
                     PhoneNumberWork = "3441255",
+                    Country = "USA",
                     State = "Washington",
+                    City = "Snoqualmie",
                     Address = "Sycamore St 144",
                 },
                 new ContactRecord
@@ -44,7 +44,9 @@ namespace ContactsAPI.Data
                     BirthDate = DateTime.Parse("1980-12-4"),
                     PhoneNumberPersonal = "3186405",
                     PhoneNumberWork = "3153729",
+                    Country = "USA",
                     State = "Washington",
+                    City = "Snoqualmie",
                     Address = "Weyland St 243",
                 },
                 new ContactRecord
@@ -57,15 +59,14 @@ namespace ContactsAPI.Data
                     BirthDate = DateTime.Parse("1990-03-12"),
                     PhoneNumberPersonal = "4698765",
                     PhoneNumberWork = "4689723",
+                    Country = "USA",
                     State = "Oregon",
+                    City = "Portland",
                     Address = "Acacia St 720",
                 }
-            };
+            );
 
-            foreach (var c in mockContactRecords)
-            {
-                context.ContactRecords.Add(c);
-            }
+            context.SaveChanges();
 
             //Add mock profile pics to context
             try
